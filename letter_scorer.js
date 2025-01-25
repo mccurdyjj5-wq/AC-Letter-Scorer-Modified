@@ -30,25 +30,26 @@ document.addEventListener("DOMContentLoaded", function () {
 			score += 20;
 		}
 
-		// +10pts per capital letter found within three spaces of each unique punctuation
-		const PUNCTUATION_TEST = [...PADDED_INPUT.matchAll(/[.?!]/g)];
-		PUNCTUATION_TEST.forEach(match => {
-			const NEXT_THREE_CHARS = input.slice(match.index + 1, match.index + 4);
-			if (NEXT_THREE_CHARS.length < 3) {
-				return;
-			}
-			else if (/^\s{3}$/.test(NEXT_THREE_CHARS)) {
-				// Do nothing if the next three characters are all spaces
-				return;
-			}
-			else if (/[A-Z]/.test(NEXT_THREE_CHARS)) {
-				score += 10;
-				return; // return when match is found to not double-count
-			}
-			else {
-				score -= 10;
-			}
-		});
+		let currentIndex = 0;
+
+		while (currentIndex < PADDED_INPUT.length) {
+		  const match = PADDED_INPUT.slice(currentIndex).match(/[.?!]/);
+	
+		  if (!match) {
+			break; // exit loop if no punctuation mark is found
+		  }
+	
+		  const punctuationIndex = currentIndex + match.index;
+		  const NEXT_THREE_CHARS = PADDED_INPUT.slice(punctuationIndex + 1, punctuationIndex + 4);
+	
+		  if (/^[A-Z]/.test(NEXT_THREE_CHARS)) {
+			score += 10;
+			currentIndex = punctuationIndex + 1 + NEXT_THREE_CHARS.search(/[A-Z]/) + 1; // move to the index after the capital letter
+		  } else {
+			score -= 10;
+			currentIndex = punctuationIndex + 4; // move to the next index after checking the next three characters
+		  }
+		}
 
 		return score;
 	}
@@ -271,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		let checkGScore = await checkG(input);
 
 		updateCheckBox(CHECK_A_BOX, checkAScore);
-		updateCheckBox(CHECK_B_BOX, checkAScore);
+		updateCheckBox(CHECK_B_BOX, checkBScore);
 		updateCheckBox(CHECK_C_BOX, checkCScore);
 		updateCheckBox(CHECK_D_BOX, checkDScore);
 		updateCheckBox(CHECK_E_BOX, checkEScore);

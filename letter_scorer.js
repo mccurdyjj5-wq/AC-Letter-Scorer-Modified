@@ -39,22 +39,26 @@ document.addEventListener("DOMContentLoaded", function () {
 			break; // exit loop if no punctuation mark is found
 		  }
 	
-		  const punctuationIndex = currentIndex + match.index;
-		  const NEXT_THREE_CHARS = PADDED_INPUT.slice(punctuationIndex + 1, punctuationIndex + 4);
+		  const PUNCT_INDEX = currentIndex + match.index;
+		  const NEXT_THREE_CHARS = PADDED_INPUT.slice(PUNCT_INDEX + 1, PUNCT_INDEX + 4);
 	
 		  if (/^\s{3}$/.test(NEXT_THREE_CHARS)) {
-			currentIndex = punctuationIndex + 4; // skip and move to the next check if 3 spaces
+			currentIndex = PUNCT_INDEX + 4; // skip and move to the next check if 3 spaces
 			continue;
 		  }
 	
-		  // check if at least one capital letter exists in the next three characters
-		  if (/[A-Z]/.test(NEXT_THREE_CHARS)) {
+		  // find the first capital letter in the next three characters
+		  const CAPITAL_MATCH = NEXT_THREE_CHARS.match(/[A-Z]/);
+	
+		  if (CAPITAL_MATCH) {
 			score += 10;
+			// update currentIndex to where the capital letter was found + 1
+			currentIndex = PUNCT_INDEX + 1 + CAPITAL_MATCH.index + 1;
 		  } else {
 			score -= 10;
+			// if no capital letter, proceed to the next three characters
+			currentIndex = PUNCT_INDEX + 4;
 		  }
-	
-		  currentIndex = punctuationIndex + 4;
 		}
 
 		return score;

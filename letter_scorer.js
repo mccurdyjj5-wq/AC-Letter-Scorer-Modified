@@ -42,13 +42,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		  const punctuationIndex = currentIndex + match.index;
 		  const NEXT_THREE_CHARS = PADDED_INPUT.slice(punctuationIndex + 1, punctuationIndex + 4);
 	
-		  if (/^[A-Z]/.test(NEXT_THREE_CHARS)) {
+		  if (/^\s{3}$/.test(NEXT_THREE_CHARS)) {
+			currentIndex = punctuationIndex + 4; // skip and move to the next check if 3 spaces
+			continue;
+		  }
+	
+		  // check if at least one capital letter exists in the next three characters
+		  if (/[A-Z]/.test(NEXT_THREE_CHARS)) {
 			score += 10;
-			currentIndex = punctuationIndex + 1 + NEXT_THREE_CHARS.search(/[A-Z]/) + 1; // move to the index after the capital letter
 		  } else {
 			score -= 10;
-			currentIndex = punctuationIndex + 4; // move to the next index after checking the next three characters
 		  }
+	
+		  currentIndex = punctuationIndex + 4;
 		}
 
 		return score;

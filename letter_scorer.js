@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		let allTrigrams = await getAllTrigrams(PADDED_INPUT);
 
 		// in-game trigram tables replicated via txt file
-		const response = await fetch('Resources/trigrams-bugged.txt');
+		const response = await fetch('Resources/trigrams-fix.txt');
 		if (!response.ok) {
 			console.error("Error fetching trigrams file:", response.statusText);
 			return 0;
